@@ -1,10 +1,9 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/app/context/AuthContext';
-import { PlusIcon, CheckIcon, XMarkIcon } from '@heroicons/react/24/solid';
+import { PlusIcon, CheckIcon, XMarkIcon, ArrowRightIcon } from '@heroicons/react/24/solid';
 import { useRouter } from 'next/navigation';
 
-// Icon mapping
 const categoryIcons = {
   'Vegetables': '/vegetable.svg',
   'Fruits': '/fruits.svg',
@@ -24,12 +23,23 @@ export default function InventoryPage() {
   const [selectedItems, setSelectedItems] = useState([]);
   const [showRecipeModal, setShowRecipeModal] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [showRecipeReady, setShowRecipeReady] = useState(false);
+  const [apiCompleted, setApiCompleted] = useState(false);
+  const [generationMessages] = useState([
+    "Preparing ingredients...",
+    "Finding perfect combinations...",
+    "Got it! Now thinking...",
+    "Generating delicious ideas...",
+    "Just a little bit more time..."
+  ]);
+  const [currentMessage, setCurrentMessage] = useState(0);
+  const [abortController, setAbortController] = useState(null);
 
   useEffect(() => {
     const fetchInventory = async () => {
       try {
         const response = await fetch('/api/inventory', {
-          credentials: 'include', 
+          credentials: 'include',
         });
         const data = await response.json();
         
@@ -50,6 +60,15 @@ export default function InventoryPage() {
     fetchInventory();
   }, []);
 
+  useEffect(() => {
+    if (isGenerating) {
+      const interval = setInterval(() => {
+        setCurrentMessage(prev => (prev + 1) % generationMessages.length);
+      }, 2000);
+      return () => clearInterval(interval);
+    }
+  }, [isGenerating, generationMessages.length]);
+
   const toggleItemSelection = (itemName) => {
     setSelectedItems(prev => 
       prev.includes(itemName) 
@@ -59,18 +78,75 @@ export default function InventoryPage() {
   };
 
   const openRecipeModal = () => {
-    if (selectedItems.length > 0) {
+    if (selectedItems.length > 0 && selectedItems.length <= 5) {
       setShowRecipeModal(true);
+      setShowRecipeReady(false);
     }
   };
 
-  const generateRecipe = () => {
+  const generateRecipe = async () => {
+    if (!showRecipeModal) return;
+    
+    const controller = new AbortController();
+    setAbortController(controller);
     setIsGenerating(true);
-    setTimeout(() => {
-      router.push(`/dashboard/recipe-maker?items=${encodeURIComponent(selectedItems.join(','))}`);
+    setApiCompleted(false);
+    
+    try {
+      const response = await fetch('/api/recipe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ingredients: selectedItems }),
+        credentials: 'include',
+        signal: controller.signal
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to generate recipes');
+      }
+
+      localStorage.setItem('generatedRecipes', JSON.stringify(data.recipes));
+      setApiCompleted(true);
+
+      // Only redirect if modal is still open
+      if (showRecipeModal) {
+        router.push(`/dashboard/recipe-maker?items=${encodeURIComponent(selectedItems.join(','))}`);
+      } else {
+        setShowRecipeReady(true);
+        setTimeout(() => setShowRecipeReady(false), 60000);
+      }
+    } catch (err) {
+      if (err.name !== 'AbortError') {
+        setError(err.message);
+      }
+    } finally {
       setIsGenerating(false);
-      setShowRecipeModal(false);
-    }, 2000);
+      setAbortController(null);
+    }
+  };
+
+  const closeModal = () => {
+    // Abort any ongoing request
+    if (abortController) {
+      abortController.abort();
+    }
+    
+    setShowRecipeModal(false);
+    
+    // Show notification if API completed
+    if (apiCompleted) {
+      setShowRecipeReady(true);
+      setTimeout(() => setShowRecipeReady(false), 60000);
+    }
+  };
+
+  const viewGeneratedRecipe = () => {
+    router.push(`/dashboard/recipe-maker?items=${encodeURIComponent(selectedItems.join(','))}`);
+    setShowRecipeReady(false);
   };
 
   if (loading) {
@@ -99,9 +175,40 @@ export default function InventoryPage() {
 
   return (
     <div className="space-y-6 h-full flex flex-col">
+      {showRecipeReady && (
+        <div className="fixed top-4 right-4 z-50">
+          <div className="bg-white rounded-lg shadow-lg p-4 border border-green-200 max-w-xs">
+            <div className="flex items-start">
+              <div className="flex-shrink-0">
+                <CheckIcon className="h-5 w-5 text-green-500" />
+              </div>
+              <div className="ml-3">
+                <p className="text-sm font-medium text-gray-900">
+                  Your recipe has been generated!
+                </p>
+                <button
+                  onClick={viewGeneratedRecipe}
+                  className="mt-1 text-sm text-indigo-600 hover:text-indigo-500 font-medium flex items-center"
+                >
+                  View recipe <ArrowRightIcon className="ml-1 h-4 w-4" />
+                </button>
+              </div>
+              <div className="ml-auto pl-3">
+                <button
+                  onClick={() => setShowRecipeReady(false)}
+                  className="text-gray-400 hover:text-gray-500"
+                >
+                  <XMarkIcon className="h-5 w-5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-900">Inventory</h1>
-        {selectedItems.length > 0 && (
+        {selectedItems.length > 0 && selectedItems.length <= 5 && (
           <button
             onClick={openRecipeModal}
             className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2"
@@ -111,8 +218,13 @@ export default function InventoryPage() {
           </button>
         )}
       </div>
+
+      {selectedItems.length > 5 && (
+        <div className="rounded-lg bg-yellow-50 p-3 text-yellow-800 text-sm">
+          Please select maximum 5 ingredients for recipe generation
+        </div>
+      )}
   
-      {/* Category Tabs */}
       <div className="flex overflow-x-auto pb-2 scrollbar-hide">
         <div className="flex space-x-2">
           {Object.keys(inventory).map((category) => (
@@ -140,7 +252,6 @@ export default function InventoryPage() {
         </div>
       </div>
   
-      {/* Inventory Items Grid with proper scrolling */}
       <div className="flex-1 min-h-0 overflow-hidden">
         {activeTab && inventory[activeTab] && (
           <div className="bg-white rounded-lg shadow h-full flex flex-col">
@@ -182,7 +293,6 @@ export default function InventoryPage() {
         )}
       </div>
   
-      {/* Recipe Confirmation Modal */}
       {showRecipeModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[80vh] overflow-y-auto">
@@ -190,7 +300,7 @@ export default function InventoryPage() {
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-xl font-bold text-gray-900">Selected Ingredients</h3>
                 <button 
-                  onClick={() => setShowRecipeModal(false)}
+                  onClick={closeModal}
                   className="text-gray-500 hover:text-gray-700"
                 >
                   <XMarkIcon className="w-6 h-6" />
@@ -242,7 +352,7 @@ export default function InventoryPage() {
                       <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
                       <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                     </div>
-                    <span>Generating Recipe...</span>
+                    <span>{generationMessages[currentMessage]}</span>
                   </>
                 ) : (
                   <>

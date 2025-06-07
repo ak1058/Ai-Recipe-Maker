@@ -4,7 +4,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from collections import defaultdict
 from app.database import get_db
 from app.models import Inventory
-from app.auth import get_current_user  # 👈 Import auth dependency
+from app.auth import get_current_user  
 
 router = APIRouter(
     prefix="/inventory",
@@ -14,7 +14,7 @@ router = APIRouter(
 @router.get("/", response_model=dict)
 def get_inventory_grouped(
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)  # 👈 Token validation here
+    current_user: dict = Depends(get_current_user)  
 ):
     try:
         items = db.query(Inventory).all()

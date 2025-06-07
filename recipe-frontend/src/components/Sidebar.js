@@ -31,18 +31,18 @@ export default function Sidebar() {
           </div>
           <nav className="mt-5 flex-1 space-y-1 px-2">
             <Link
-              href="/dashboard"
+              href="/dashboard/inventory"
               className="flex items-center rounded-lg px-2 py-3 text-sm font-medium text-indigo-700 bg-indigo-50"
             >
               <HomeIcon className="mr-3 h-6 w-6 flex-shrink-0" />
-              Dashboard
+              Inventory dashboard
             </Link>
             <Link
-              href="#"
+              href="/dashboard/saved-recipes"
               className="flex items-center rounded-lg px-2 py-3 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900"
             >
               <BookOpenIcon className="mr-3 h-6 w-6 flex-shrink-0" />
-              Recipes
+              Saved Recipes
             </Link>
             <Link
               href="#"

@@ -29,7 +29,6 @@ def decode_access_token(token: str):
     except JWTError:
         return None
     except Exception:
-        # For any other error during decoding
         return None
 
 # DB session getter

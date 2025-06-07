@@ -18,7 +18,6 @@ export async function POST(request) {
       throw new Error(data.message || 'Login failed');
     }
 
-    // Return the token and user data
     return NextResponse.json({
       access_token: data.access_token,
       user: data.user
