@@ -276,11 +276,11 @@ export default function RecipeMakerPage() {
                       <button 
                         onClick={() => handleFetchVideos(recipe.name, index)}
                         disabled={videoState.loading || videoState.videos}
-                        className={`flex items-center gap-2 px-5 py-2.5 ${videoState.videos ? 'bg-gray-100 text-gray-800' : 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white'} rounded-xl transition-all shadow-sm hover:shadow-md disabled:opacity-70`}
+                        className={`flex items-center gap-2 px-5 py-2.5 ${videoState.videos ? 'bg-gray-100 text-gray-800 ' : 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white cursor-pointer'} rounded-xl transition-all shadow-sm hover:shadow-md disabled:opacity-70`}
                       >
                         {videoState.loading ? (
                           <>
-                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white cursor-wait"></div>
                             Searching...
                           </>
                         ) : (
@@ -293,11 +293,11 @@ export default function RecipeMakerPage() {
                       <button 
                         onClick={() => handleSaveRecipe(recipe, index)}
                         disabled={saveState.loading}
-                        className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl transition-all shadow-sm hover:shadow-md disabled:opacity-70 relative"
+                        className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl transition-all shadow-sm hover:shadow-md disabled:opacity-70 relative cursor-pointer disabled:cursor-not-allowed"
                       >
                         {saveState.loading ? (
                           <>
-                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white cursor-wait"></div>
                             Saving...
                           </>
                         ) : (

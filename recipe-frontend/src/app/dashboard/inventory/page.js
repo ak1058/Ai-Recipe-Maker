@@ -211,7 +211,7 @@ export default function InventoryPage() {
         {selectedItems.length > 0 && selectedItems.length <= 5 && (
           <button
             onClick={openRecipeModal}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2"
+            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <CheckIcon className="w-5 h-5" />
             Create AI Recipe ({selectedItems.length} selected)
@@ -231,7 +231,7 @@ export default function InventoryPage() {
             <button
               key={category}
               onClick={() => setActiveTab(category)}
-              className={`flex flex-col items-center justify-center px-4 py-3 rounded-lg min-w-[100px] transition-all ${activeTab === category ? 'bg-indigo-100 border-indigo-500 text-indigo-700' : 'bg-white border-gray-200 hover:bg-gray-50 text-gray-700'} border`}
+              className={`flex flex-col items-center justify-center px-4 py-3 rounded-lg min-w-[100px] transition-all  ${activeTab === category ? 'bg-indigo-100 border-indigo-500 text-indigo-700' : 'bg-white border-gray-200 hover:bg-gray-50 text-gray-700 cursor-pointer'} border`}
             >
               <div className="w-8 h-8 mb-1 flex items-center justify-center">
                 {categoryIcons[category] ? (
@@ -343,11 +343,11 @@ export default function InventoryPage() {
               <button
                 onClick={generateRecipe}
                 disabled={isGenerating}
-                className={`w-full py-3 rounded-lg flex items-center justify-center gap-2 ${isGenerating ? 'bg-indigo-400' : 'bg-indigo-600 hover:bg-indigo-700'} text-white transition-colors`}
+                className={`w-full py-3 rounded-lg flex items-center justify-center gap-2 ${isGenerating ? 'bg-indigo-400 cursor-wait ' : 'bg-indigo-600 hover:bg-indigo-700 cursor-pointer'} text-white transition-colors`}
               >
                 {isGenerating ? (
                   <>
-                    <div className="flex space-x-1">
+                    <div className="flex space-x-1 cursor-wait">
                       <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                       <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
                       <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />

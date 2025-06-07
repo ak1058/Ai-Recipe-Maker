@@ -160,7 +160,7 @@ export default function SavedRecipesPage() {
                       </span>
                     </div>
                   </div>
-                  <button className="text-gray-500 hover:text-amber-600 transition-colors">
+                  <button className="text-gray-500 hover:text-amber-600 transition-colors cursor-pointer">
                     {isExpanded ? <FiChevronUp size={20} /> : <FiChevronDown size={20} />}
                   </button>
                 </div>
