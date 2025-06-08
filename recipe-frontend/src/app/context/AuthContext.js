@@ -49,7 +49,11 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const initializeAuth = async () => {
       const isAuthenticated = await checkAuth();
-      if (!isAuthenticated) {
+      // Don't redirect from public pages
+      const publicPaths = ['/', '/register', '/login'];
+      const currentPath = window.location.pathname;
+
+      if (!isAuthenticated && !publicPaths.includes(currentPath)) {
         router.push('/login');
       }
     };
