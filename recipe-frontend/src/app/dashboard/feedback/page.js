@@ -76,7 +76,7 @@ export default function GiveFeedbackPage() {
       <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden p-6">
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-gray-800">Share Your Feedback</h1>
-          <p className="mt-2 text-gray-600">We'd love to hear about your experience</p>
+          <p className="mt-2 text-gray-600">We&apos;d love to hear about your experience</p>
         </div>
         
         {isSuccess && (

@@ -48,7 +48,7 @@ export default function CreativeLanding() {
 
         <p className="text-gray-500 mb-6 sm:mb-10 flex items-center justify-center gap-2 text-sm sm:text-base">
           <FaLeaf className="text-green-400" />
-          Discover recipes you'd never imagine
+          Discover recipes you&apos;d never imagine
           <FaLeaf className="text-green-400" />
         </p>
 
