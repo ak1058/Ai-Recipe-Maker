@@ -10,6 +10,10 @@ app.include_router(user.router)
 app.include_router(inventory.router)
 app.include_router(recipe.router)
 
-@app.get("/")
-def root():
+# @app.get("/")
+# def root():
+#     return {"message": "Welcome to Recipe App API"}
+
+@app.head("/")
+def health_check():
     return {"message": "Welcome to Recipe App API"}
