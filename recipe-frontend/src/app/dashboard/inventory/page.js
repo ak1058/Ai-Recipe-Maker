@@ -25,12 +25,14 @@ export default function InventoryPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [showRecipeReady, setShowRecipeReady] = useState(false);
   const [apiCompleted, setApiCompleted] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
   const [generationMessages] = useState([
     "Preparing ingredients...",
     "Finding perfect combinations...",
     "Got it! Now thinking...",
     "Generating delicious ideas...",
-    "Just a little bit more time..."
+    "Just a little bit more time...",
+    "Loading your recipeeeeeeee...",
   ]);
   const [currentMessage, setCurrentMessage] = useState(0);
   const [abortController, setAbortController] = useState(null);
@@ -64,7 +66,7 @@ export default function InventoryPage() {
     if (isGenerating) {
       const interval = setInterval(() => {
         setCurrentMessage(prev => (prev + 1) % generationMessages.length);
-      }, 2000);
+      }, 1500);
       return () => clearInterval(interval);
     }
   }, [isGenerating, generationMessages.length]);
@@ -111,6 +113,7 @@ export default function InventoryPage() {
 
       localStorage.setItem('generatedRecipes', JSON.stringify(data.recipes));
       setApiCompleted(true);
+      setRedirecting(true);
 
       // Only redirect if modal is still open
       if (showRecipeModal) {
@@ -136,6 +139,7 @@ export default function InventoryPage() {
     }
     
     setShowRecipeModal(false);
+    setRedirecting(false);
     
     // Show notification if API completed
     if (apiCompleted) {
@@ -173,8 +177,18 @@ export default function InventoryPage() {
     );
   }
 
+  if (redirecting) {
+    return (
+      <div className="fixed inset-0 bg-white bg-opacity-90 flex flex-col items-center justify-center z-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500 mb-4"></div>
+        <h2 className="text-xl font-semibold text-gray-800">Redirecting...</h2>
+        <p className="text-gray-600 mt-2">Preparing your Serving Table...</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-6 h-full flex flex-col">
+    <div className="space-y-4 md:space-y-6 h-full flex flex-col px-2 sm:px-4">
       {showRecipeReady && (
         <div className="fixed top-4 right-4 z-50">
           <div className="bg-white rounded-lg shadow-lg p-4 border border-green-200 max-w-xs">
@@ -206,15 +220,15 @@ export default function InventoryPage() {
         </div>
       )}
 
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">Inventory</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Inventory</h1>
         {selectedItems.length > 0 && selectedItems.length <= 5 && (
           <button
             onClick={openRecipeModal}
-            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-3 py-2 sm:px-4 sm:py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
           >
-            <CheckIcon className="w-5 h-5" />
-            Create AI Recipe ({selectedItems.length} selected)
+            <CheckIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span>Create AI Recipe ({selectedItems.length} selected)</span>
           </button>
         )}
       </div>
@@ -231,9 +245,9 @@ export default function InventoryPage() {
             <button
               key={category}
               onClick={() => setActiveTab(category)}
-              className={`flex flex-col items-center justify-center px-4 py-3 rounded-lg min-w-[100px] transition-all  ${activeTab === category ? 'bg-indigo-100 border-indigo-500 text-indigo-700' : 'bg-white border-gray-200 hover:bg-gray-50 text-gray-700 cursor-pointer'} border`}
+              className={`flex flex-col items-center justify-center px-3 py-2 sm:px-4 sm:py-3 rounded-lg min-w-[80px] sm:min-w-[100px] transition-all ${activeTab === category ? 'bg-indigo-100 border-indigo-500 text-indigo-700' : 'bg-white border-gray-200 hover:bg-gray-50 text-gray-700 cursor-pointer'} border`}
             >
-              <div className="w-8 h-8 mb-1 flex items-center justify-center">
+              <div className="w-6 h-6 sm:w-8 sm:h-8 mb-1 flex items-center justify-center">
                 {categoryIcons[category] ? (
                   <img 
                     src={categoryIcons[category]} 
@@ -255,19 +269,19 @@ export default function InventoryPage() {
       <div className="flex-1 min-h-0 overflow-hidden">
         {activeTab && inventory[activeTab] && (
           <div className="bg-white rounded-lg shadow h-full flex flex-col">
-            <div className="p-4 border-b">
-              <h2 className="text-lg font-semibold text-gray-800">{activeTab}</h2>
+            <div className="p-3 sm:p-4 border-b">
+              <h2 className="text-md sm:text-lg font-semibold text-gray-800">{activeTab}</h2>
             </div>
             
-            <div className="flex-1 overflow-y-auto p-4">
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <div className="flex-1 overflow-y-auto p-2 sm:p-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3 md:gap-4">
                 {inventory[activeTab].map((item) => (
                   <div 
                     key={item.id} 
-                    className={`relative flex flex-col items-center p-3 rounded-lg border-2 transition-all cursor-pointer ${selectedItems.includes(item.name) ? 'border-indigo-500 bg-indigo-50 shadow-md' : 'border-gray-200 hover:border-gray-300 hover:shadow-sm'}`}
+                    className={`relative flex flex-col items-center p-2 sm:p-3 rounded-lg border-2 transition-all cursor-pointer ${selectedItems.includes(item.name) ? 'border-indigo-500 bg-indigo-50 shadow-md' : 'border-gray-200 hover:border-gray-300 hover:shadow-sm'}`}
                     onClick={() => toggleItemSelection(item.name)}
                   >
-                    <div className="relative w-20 h-20 mb-3 rounded-xl bg-gray-100 flex items-center justify-center overflow-hidden">
+                    <div className="relative w-16 h-16 sm:w-20 sm:h-20 mb-2 sm:mb-3 rounded-xl bg-gray-100 flex items-center justify-center overflow-hidden">
                       {item.image_url ? (
                         <img 
                           src={item.image_url} 
@@ -276,14 +290,14 @@ export default function InventoryPage() {
                         />
                       ) : (
                         <div className="flex flex-col items-center">
-                          <span className="text-4xl text-gray-300">?</span>
+                          <span className="text-3xl sm:text-4xl text-gray-300">?</span>
                           <span className="text-xs text-gray-400 mt-1">no image</span>
                         </div>
                       )}
                     </div>
-                    <span className="text-sm font-medium text-center text-gray-700">{item.name}</span>
-                    <div className={`absolute top-2 right-2 w-5 h-5 rounded-full flex items-center justify-center ${selectedItems.includes(item.name) ? 'bg-indigo-600 text-white' : 'bg-white text-gray-600 border border-gray-300'}`}>
-                      <PlusIcon className="w-3 h-3" />
+                    <span className="text-xs sm:text-sm font-medium text-center text-gray-700 line-clamp-2">{item.name}</span>
+                    <div className={`absolute top-1 right-1 sm:top-2 sm:right-2 w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center ${selectedItems.includes(item.name) ? 'bg-indigo-600 text-white' : 'bg-white text-gray-600 border border-gray-300'}`}>
+                      <PlusIcon className="w-2 h-2 sm:w-3 sm:h-3" />
                     </div>
                   </div>
                 ))}
@@ -294,20 +308,20 @@ export default function InventoryPage() {
       </div>
   
       {showRecipeModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[80vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-bold text-gray-900">Selected Ingredients</h3>
+            <div className="p-4 sm:p-6">
+              <div className="flex justify-between items-center mb-3 sm:mb-4">
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900">Selected Ingredients</h3>
                 <button 
                   onClick={closeModal}
                   className="text-gray-500 hover:text-gray-700"
                 >
-                  <XMarkIcon className="w-6 h-6" />
+                  <XMarkIcon className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
               </div>
               
-              <div className="space-y-3 mb-6">
+              <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
                 {Object.entries(inventory).map(([category, items]) => {
                   const categoryItems = selectedItems.filter(itemName => 
                     items.some(item => item.name === itemName)
@@ -316,20 +330,20 @@ export default function InventoryPage() {
                   if (categoryItems.length === 0) return null;
                   
                   return (
-                    <div key={category} className="bg-gray-50 rounded-lg p-3">
-                      <div className="flex items-center gap-2 mb-2">
+                    <div key={category} className="bg-gray-50 rounded-lg p-2 sm:p-3">
+                      <div className="flex items-center gap-2 mb-1 sm:mb-2">
                         <img 
                           src={categoryIcons[category] || '/others.svg'} 
                           alt={category} 
-                          className="w-6 h-6"
+                          className="w-5 h-5 sm:w-6 sm:h-6"
                         />
-                        <h4 className="font-medium text-gray-800">{category}</h4>
+                        <h4 className="font-medium text-sm sm:text-base text-gray-800">{category}</h4>
                       </div>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap gap-1 sm:gap-2">
                         {categoryItems.map(itemName => (
                           <span 
                             key={itemName} 
-                            className="bg-white px-3 py-1 rounded-full text-sm shadow-xs border border-gray-200"
+                            className="bg-white px-2 py-1 rounded-full text-xs sm:text-sm shadow-xs border border-gray-200"
                           >
                             {itemName}
                           </span>
@@ -343,7 +357,7 @@ export default function InventoryPage() {
               <button
                 onClick={generateRecipe}
                 disabled={isGenerating}
-                className={`w-full py-3 rounded-lg flex items-center justify-center gap-2 ${isGenerating ? 'bg-indigo-400 cursor-wait ' : 'bg-indigo-600 hover:bg-indigo-700 cursor-pointer'} text-white transition-colors`}
+                className={`w-full py-2 sm:py-3 rounded-lg flex items-center justify-center gap-2 ${isGenerating ? 'bg-indigo-400 cursor-wait' : 'bg-indigo-600 hover:bg-indigo-700 cursor-pointer'} text-white transition-colors text-sm sm:text-base`}
               >
                 {isGenerating ? (
                   <>
@@ -356,7 +370,7 @@ export default function InventoryPage() {
                   </>
                 ) : (
                   <>
-                    <CheckIcon className="w-5 h-5" />
+                    <CheckIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                     <span>Create AI Recipe</span>
                   </>
                 )}

@@ -29,13 +29,17 @@ export const AuthProvider = ({ children }) => {
 
       if (response.ok) {
         const data = await response.json();
-        Cookies.set('user', JSON.stringify(data.user), { expires: 1 });
-        setUser(data.user);
+        // Cookies.set('user', JSON.stringify(userData), { expires: 0.5 });
+        // setUser(data.user);
         return true;
       }
+      Cookies.remove('user');
+      setUser(null);
       return false;
-    } catch (error) {
+    }  catch (error) {
       console.error('Auth verification failed:', error);
+      Cookies.remove('user');
+      setUser(null);
       return false;
     } finally {
       setLoading(false);
@@ -67,8 +71,7 @@ export const AuthProvider = ({ children }) => {
       });
       
       if (res.ok) {
-        // Store user data in client-side cookie
-        Cookies.set('user', JSON.stringify(userData), { expires: 1 });
+        Cookies.set('user', JSON.stringify(userData), { expires: 0.5 });
         setUser(userData);
         return true;
       }
