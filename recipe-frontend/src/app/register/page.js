@@ -15,6 +15,7 @@ export default function RegisterPage() {
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [showServerNotification, setShowServerNotification] = useState(false);
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
 
@@ -47,6 +48,7 @@ export default function RegisterPage() {
     e.preventDefault();
     if (!validateForm()) return;
     setLoading(true);
+    setShowServerNotification(true);
 
     try {
       const response = await fetch('/api/register', {
@@ -81,6 +83,7 @@ export default function RegisterPage() {
       });
     } finally {
       setLoading(false);
+      setShowServerNotification(false);
     }
   };
 
@@ -99,6 +102,13 @@ export default function RegisterPage() {
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-100 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl overflow-hidden w-full max-w-md">
         <div className="p-8">
+        {showServerNotification && (
+            <div className="mb-6 p-3 bg-blue-50 rounded-lg text-center">
+              <p className="text-blue-600 animate-pulse">
+                Please wait for some time as the server is getting active again from inactivity...
+              </p>
+            </div>
+          )}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900">Create an account</h1>
             <p className="mt-2 text-gray-600">Join Recipe AI to get started</p>
