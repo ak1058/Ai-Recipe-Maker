@@ -27,10 +27,10 @@ export default function InventoryPage() {
   const [apiCompleted, setApiCompleted] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
   const [generationMessages] = useState([
-    "Preparing ingredients...",
-    "Finding perfect combinations...",
-    "Got it! Now thinking...",
-    "Generating delicious ideas...",
+    "🔥 Heating up the tandoor...",
+    " Mixing AI with masala...",
+    "Chef Amit is cooking up ideas...",
+    "Calling the recipe gods...",
     "Just a little bit more time...",
     "Loading your recipeeeeeeee...",
   ]);

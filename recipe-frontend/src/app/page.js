@@ -4,39 +4,46 @@ import { useRouter } from "next/navigation";
 import { GiCookingPot, GiMeal, GiChefToque, GiFruitBowl, GiSpoon } from "react-icons/gi";
 import { FaLeaf, FaRegLightbulb, FaUtensils } from "react-icons/fa";
 import { IoFastFoodOutline } from "react-icons/io5";
+import Image from "next/image";
 
 export default function CreativeLanding() {
   const router = useRouter();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-blue-100 flex flex-col items-center justify-center p-4 md:p-6 relative overflow-hidden">
-      {/* Decorative floating icons - visible on mobile but adjusted */}
-<GiFruitBowl className="absolute top-12 sm:top-20 left-2 sm:left-10 text-blue-200 text-3xl sm:text-6xl rotate-12 opacity-60" />
-<GiSpoon className="absolute bottom-1/4 right-2 sm:right-16 text-indigo-200 text-2xl sm:text-5xl -rotate-45 opacity-50" />
-<FaLeaf className="absolute top-1/3 right-2 sm:right-24 text-green-200 text-xl sm:text-4xl rotate-15 opacity-70" />
-<IoFastFoodOutline className="absolute bottom-16 sm:bottom-20 left-8 sm:left-1/4 text-yellow-200 text-2xl sm:text-5xl -rotate-12 opacity-60" />
+  
+      <GiFruitBowl className="absolute top-12 sm:top-20 left-2 sm:left-10 text-blue-200 text-3xl sm:text-6xl rotate-12 opacity-60" />
+      <GiSpoon className="absolute bottom-1/4 right-2 sm:right-16 text-indigo-200 text-2xl sm:text-5xl -rotate-45 opacity-50" />
+      <FaLeaf className="absolute top-1/3 right-2 sm:right-24 text-green-200 text-xl sm:text-4xl rotate-15 opacity-70" />
+      <IoFastFoodOutline className="absolute bottom-16 sm:bottom-20 left-8 sm:left-1/4 text-yellow-200 text-2xl sm:text-5xl -rotate-12 opacity-60" />
 
       <div className="w-full max-w-2xl text-center space-y-4 sm:space-y-8 relative z-10 px-2">
-        <div className="flex justify-center items-center gap-2 sm:gap-3">
-          <GiCookingPot className="text-3xl sm:text-5xl text-blue-600" />
-          <h1 className="text-3xl sm:text-5xl font-bold text-gray-800">
-            <span className="text-blue-600">AI</span> Recipe Wizard
-          </h1>
+        <div className="flex justify-center items-center">
+  
+          <div className="relative w-64 h-32 sm:w-80 sm:h-40 md:w-96 md:h-48">
+            <Image 
+              src="/logo_home.png" 
+              alt="Your Logo"
+              fill
+              className="object-contain"
+              priority
+            />
+          </div>
         </div>
         
         <div className="text-lg sm:text-xl text-gray-600 h-20 sm:h-24 flex items-center justify-center gap-2 px-2">
           <TypeAnimation
             sequence={[
-              "Hungry for something magical?",
+              "Bhook lagi hai? AI Chef taiyaar hai! ",
               1000,
-              "Let AI craft your perfect meal...",
+              "Jo fridge mein hai, ussi se banega kamaal! ",
               1000,
-              "From pantry staples to gourmet feasts",
+              "Aaj khana banayega tera digital bawarchi! ",
               1000,
-              "Your personal chef in the cloud",
+              "Bas ingredients daalo, recipe mil jaayegi! ",
               1000,
-              "Recipes that surprise and delight",
-              1000
+              "Swad bhi, tech bhi – asli AI wala tadka! ",
+              1000,
             ]}
             wrapper="span"
             speed={50}
