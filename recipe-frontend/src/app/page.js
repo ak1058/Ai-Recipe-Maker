@@ -20,19 +20,20 @@ export default function CreativeLanding() {
       <div className="w-full max-w-2xl text-center space-y-4 sm:space-y-8 relative z-10 px-2">
         <div className="flex justify-center items-center">
   
-          <div className="relative w-64 h-32 sm:w-80 sm:h-40 md:w-96 md:h-48">
+        <div className="relative w-[500px] h-[250px] sm:w-[600px] sm:h-[300px] md:w-[700px] md:h-[350px]">
             <Image 
               src="/logo_home.png" 
               alt="Your Logo"
               fill
               className="object-contain"
               priority
+              sizes="(max-width: 768px) 100vw, 700px"
             />
           </div>
         </div>
         
         <div className="text-lg sm:text-xl text-gray-600 h-20 sm:h-24 flex items-center justify-center gap-2 px-2">
-          <TypeAnimation
+            <TypeAnimation
             sequence={[
               "Bhook lagi hai? AI Chef taiyaar hai! ",
               1000,
@@ -49,7 +50,7 @@ export default function CreativeLanding() {
             speed={50}
             style={{ display: "inline-block" }}
             repeat={Infinity}
-            className="font-medium text-sm sm:text-base"
+            className="font-larger text-lg sm:text-base"
           />
         </div>
 
