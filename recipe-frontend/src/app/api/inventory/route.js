@@ -2,9 +2,7 @@ import { NextResponse } from 'next/server';
 
 export async function GET(request) {
   try {
-    // Get the HTTP-only cookie from the request
     const token = request.cookies.get('access_token')?.value;
-    console.log('Token:', token);
 
     if (!token) {
       return NextResponse.json(
@@ -13,7 +11,7 @@ export async function GET(request) {
       );
     }
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/inventory`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/inventor`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -22,6 +20,7 @@ export async function GET(request) {
     });
 
     const data = await response.json();
+    console.log(data, "data")
 
     if (!response.ok) {
       throw new Error(data.message || 'Failed to fetch inventory');
