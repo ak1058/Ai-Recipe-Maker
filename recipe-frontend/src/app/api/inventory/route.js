@@ -11,7 +11,7 @@ export async function GET(request) {
       );
     }
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/inventor`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/inventory/`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
